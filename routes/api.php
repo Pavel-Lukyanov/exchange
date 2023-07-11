@@ -29,5 +29,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'showUser']);
 
     Route::get('/objects', [ServicedObjectController::class, 'index']);
+    Route::get('/objects/{id}', [ServicedObjectController::class, 'showObject']);
 });
 

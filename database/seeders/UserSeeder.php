@@ -15,9 +15,19 @@ class UserSeeder extends Seeder
     public function run()
     {
         $user = new User();
-        $user->name = 'Pavel';
-        $user->password = bcrypt('1234');
+        $user->firstname = 'Павел';
+        $user->patronymic = 'Александрович';
+        $user->surname = 'Лукьянов';
         $user->email = 'test@mail.ru';
+        $user->password = bcrypt('12345678');
+        $user->city = 'Сургут';
+        $user->street = 'пр. Комсомольский';
+        $user->house = '13';
+        $user->flat = '11';
+        $user->birthday = '1996-04-21';
+        $user->date_medical_examination = '2020-04-21';
+        $user->position = 'Директор';
+        $user->phone = '+79526932995';
         $user->save();
     }
 }

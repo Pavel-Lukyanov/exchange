@@ -23,11 +23,11 @@ return new class extends Migration
             $table->string('street');
             $table->string('house');
             $table->string('contract_number');
-            $table->string('contract_date_start');
-            $table->string('contract_date_end');
+            $table->date('contract_date_start');
+            $table->date('contract_date_end');
             $table->string('type_installation');
             $table->string('name_organization_do_project');
-            $table->string('project_release_date');
+            $table->date('project_release_date');
             $table->string('organization_name_mounting')->nullable();
             $table->date('date_delivery_object')->nullable();
             $table->json('services_schedule');
@@ -36,6 +36,7 @@ return new class extends Migration
             $table->json('loop_lists')->nullable();
             $table->json('photos')->nullable();
             $table->boolean('is_archived')->default(false);
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
         });
     }

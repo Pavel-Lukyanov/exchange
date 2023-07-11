@@ -25,7 +25,7 @@ class User extends Authenticatable
         'password',
         'city',
         'street',
-        'house_number',
+        'house',
         'flat',
         'birthday',
         'date_medical_examination',

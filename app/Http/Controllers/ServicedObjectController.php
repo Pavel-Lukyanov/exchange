@@ -16,4 +16,14 @@ class ServicedObjectController extends Controller
        $objects = ServicedObject::all();
        return response()->json($objects);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function showObject($id): JsonResponse
+    {
+        $object = ServicedObject::findOrFail($id);
+
+        return response()->json($object);
+    }
 }

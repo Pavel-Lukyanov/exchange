@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('city')->nullable();
             $table->string('street')->nullable();
-            $table->string('house_number')->nullable();
+            $table->string('house')->nullable();
             $table->string('flat')->nullable();
             $table->date('birthday')->nullable();
             $table->date('date_medical_examination')->nullable();
