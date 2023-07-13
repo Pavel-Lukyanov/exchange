@@ -11,10 +11,18 @@ class ServicedObjectController extends Controller
     /**
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-       $objects = ServicedObject::all();
-       return response()->json($objects);
+        $userId = auth()->user()->id;
+        $objects = ServicedObject::query()->where('user_id', $userId)->first();
+//        $employees = $objects->employees;
+//        $employeeIds = [];
+//        foreach ($employees as $employee) {
+//            $employeeIds[] = $employee->user_id;
+//        }
+//        $objects = ServicedObject::query()->whereIn('user_id', $employeeIds)->get();
+
+        return response()->json($objects);
     }
 
     /**

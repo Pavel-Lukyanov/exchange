@@ -13,15 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('name');
-            $table->string('country');
-            $table->string('city');
-            $table->string('street');
-            $table->string('house');
-            $table->date('deleted_at')->nullable()->default(null);
+            $table->foreignId('object_id')->constrained('serviced_objects')->nullOnDelete();
+            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('employees');
     }
 };

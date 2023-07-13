@@ -32,4 +32,9 @@ class ServicedObject extends Model
         'is_archived',
         'is_completed'
     ];
+
+    public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
+    }
 }
