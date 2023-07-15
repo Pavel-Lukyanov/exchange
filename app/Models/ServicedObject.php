@@ -37,4 +37,9 @@ class ServicedObject extends Model
     {
         return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
     }
+
+    public function customers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
+    }
 }
