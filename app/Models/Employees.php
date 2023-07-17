@@ -21,6 +21,6 @@ class Employees extends Model
 
     public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(User::class, 'user_id', 'id'); // Один к одному
+        return $this->hasOne(User::class); // Один к одному
     }
 }

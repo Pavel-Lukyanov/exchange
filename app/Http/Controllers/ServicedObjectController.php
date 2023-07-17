@@ -3,26 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServicedObject;
+use App\Services\ServicedObjectService;
+use App\Transformers\ServicedObjectTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use League\Fractal\Serializer\JsonApiSerializer;
 
 class ServicedObjectController extends Controller
 {
+    private ServicedObjectTransformer $objectTransformer;
+    private ServicedObjectService $objectService;
+
+    public function __construct(ServicedObjectService $objectService, ServicedObjectTransformer $objectTransformer)
+    {
+        $this->objectService = $objectService;
+        $this->objectTransformer = $objectTransformer;
+    }
+
     /**
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
-        $userId = auth()->user()->id;
-        $objects = ServicedObject::query()->where('user_id', $userId)->first();
-//        $employees = $objects->employees;
-//        $employeeIds = [];
-//        foreach ($employees as $employee) {
-//            $employeeIds[] = $employee->user_id;
-//        }
-//        $objects = ServicedObject::query()->whereIn('user_id', $employeeIds)->get();
+        $userId = auth()->user()->getAuthIdentifier();
+        $objects = $this->objectService->index($userId);
 
-        return response()->json($objects);
+        $data = fractal()
+            ->collection($objects)
+            ->transformWith($this->objectTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->withResourceName('serviced_objects')
+            ->toArray();
+
+        return response()->json($data);
     }
 
     /**
