@@ -26,8 +26,7 @@ class ServicedObjectController extends Controller
     public function index(Request $request): JsonResponse
     {
         $userId = auth()->user()->getAuthIdentifier();
-		$objects = $this->objectService->index($userId);
-		$object = 23;
+		$objects = $this->objectService->index($request->all(), $userId);
 
         $data = fractal()
             ->collection($objects)

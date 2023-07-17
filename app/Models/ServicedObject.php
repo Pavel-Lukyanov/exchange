@@ -69,8 +69,17 @@ class ServicedObject extends Model
         return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
     }
 
-    public static function getObjects($userId): \Illuminate\Database\Eloquent\Collection|array
+    public static function getObjects($data, $userId): \Illuminate\Database\Eloquent\Collection|array
     {
-        return self::query()->where('user_id', $userId)->get();
+        $object = self::query()
+            ->where('user_id', $userId)
+            ->when(isset($data['is_completed']), function ($q) use ($data) {
+                $q->where('is_completed', $data['is_completed']);
+            })
+            ->when(isset($data['sort']), function($q) use ($data) {
+                $q->orderBy($data['sort'], 'desc');
+            })
+            ->get();
+        return $object;
     }
 }
