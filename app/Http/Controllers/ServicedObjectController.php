@@ -27,6 +27,7 @@ class ServicedObjectController extends Controller
     {
         $userId = auth()->user()->getAuthIdentifier();
         $objects = $this->objectService->index($userId);
+        $objects = $this->objectService->index($userId);
 
         $data = fractal()
             ->collection($objects)
