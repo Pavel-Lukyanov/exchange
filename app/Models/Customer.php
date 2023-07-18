@@ -5,18 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $serviced_object_id
+ * @property int $user_id
+ */
+
 class Customer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'object_id',
+        'serviced_object_id',
         'user_id'
     ];
 
     public function object(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(ServicedObject::class, 'object_id', 'id'); // Один ко многим
+        return $this->belongsTo(ServicedObject::class, 'serviced_object_id', 'id'); // Один ко многим
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\HasOne

@@ -28,6 +28,7 @@ class ServicedObjectController extends Controller
         $userId = auth()->user()->getAuthIdentifier();
 		$objects = $this->objectService->index($request->all(), $userId);
 
+
         $data = fractal()
             ->collection($objects)
             ->transformWith($this->objectTransformer)
@@ -43,7 +44,7 @@ class ServicedObjectController extends Controller
      */
     public function showObject($id): JsonResponse
     {
-        $object = ServicedObject::findOrFail($id);
+        $object = $this->objectService->showObject($id);
 
         return response()->json($object);
     }

@@ -35,7 +35,7 @@ class EmployeeTransformer extends TransformerAbstract
         return [
             'id'=>$employees->id,
             'user_id'=>$employees->user_id,
-            'object_id'=>$employees->object_id,
+            'serviced_object_id'=>$employees->serviced_object_id,
         ];
     }
 

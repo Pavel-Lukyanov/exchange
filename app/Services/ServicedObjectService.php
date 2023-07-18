@@ -10,4 +10,9 @@ class ServicedObjectService
     {
         return ServicedObject::getObjects($data, $userId);
     }
+
+    public function showObject($id)
+    {
+        return ServicedObject::findOrFail($id);
+    }
 }
