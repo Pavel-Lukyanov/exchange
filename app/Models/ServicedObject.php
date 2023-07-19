@@ -61,17 +61,17 @@ class ServicedObject extends Model
 
     public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
+        return $this->hasMany(Employees::class, 'serviced_object_id'); // Многие к одному
     }
 
     public function customers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Employees::class, 'object_id'); // Многие к одному
+        return $this->hasMany(Employees::class, 'serviced_object_id'); // Многие к одному
     }
 
-    public static function getObjects($data, $userId): \Illuminate\Database\Eloquent\Collection|array
+    public static function getObjects($data, $userId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $object = self::query()
+        $objects = self::query()
             ->where('user_id', $userId)
             ->when(isset($data['is_completed']), function ($q) use ($data) {
                 $q->where('is_completed', $data['is_completed']);
@@ -79,7 +79,31 @@ class ServicedObject extends Model
             ->when(isset($data['sort']), function($q) use ($data) {
                 $q->orderBy($data['sort'], 'desc');
             })
-            ->get();
+            ->paginate(config('defaults.pagination.per_page'));
+
+        return $objects;
+    }
+
+    public static function searchObjects($data, $userId): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $objects = self::query()
+            ->where('user_id', $userId)
+            ->when(isset($data['search']), function ($q) use ($data) {
+                $q->where('name', 'LIKE', '%' . $data['search'] . '%')
+                    ->orWhere('street', 'LIKE', '%' . $data['search'] . '%');
+            })
+            ->paginate(config('defaults.pagination.per_page'));
+
+        return $objects;
+    }
+
+    public static function createObject(array $data)
+    {
+        $object = (new self())->create([
+            'name' => $data['name'] ?? null,
+            'user_id' => $data['user_id']
+        ]);
+
         return $object;
     }
 }

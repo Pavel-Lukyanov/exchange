@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\SearchServicedObjectController;
 use App\Http\Controllers\ServicedObjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,14 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'showUser']);
 
-    Route::get('/objects', [ServicedObjectController::class, 'index']);
-    Route::get('/objects/{id}', [ServicedObjectController::class, 'showObject']);
+    Route::prefix('/objects')->group(function () {
+        Route::get('/{id}', [ServicedObjectController::class, 'showObject']);
+        Route::get('/', [ServicedObjectController::class, 'index']);
+
+        Route::post('/create', [ServicedObjectController::class, 'create']);
+    });
+    Route::get('/search-objects', [SearchServicedObjectController::class, 'search']);
+
+
 });
 

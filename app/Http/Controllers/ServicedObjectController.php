@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateObjectRequest;
 use App\Models\ServicedObject;
 use App\Services\ServicedObjectService;
 use App\Transformers\ServicedObjectTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 class ServicedObjectController extends Controller
@@ -28,11 +30,11 @@ class ServicedObjectController extends Controller
         $userId = auth()->user()->getAuthIdentifier();
 		$objects = $this->objectService->index($request->all(), $userId);
 
-
         $data = fractal()
             ->collection($objects)
             ->transformWith($this->objectTransformer)
             ->serializeWith(new JsonApiSerializer())
+            ->paginateWith(new IlluminatePaginatorAdapter($objects))
             ->withResourceName('serviced_objects')
             ->toArray();
 
@@ -46,6 +48,27 @@ class ServicedObjectController extends Controller
     {
         $object = $this->objectService->showObject($id);
 
-        return response()->json($object);
+        $data = fractal()
+            ->item($object)
+            ->transformWith($this->objectTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->withResourceName('serviced_object')
+            ->toArray();
+
+        return response()->json($data);
+    }
+
+    public function create(CreateObjectRequest $request): JsonResponse
+    {
+        $object = $this->objectService->createObject($request->all());
+
+        $data = fractal()
+            ->item($object)
+            ->transformWith($this->objectTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->withResourceName('serviced_object')
+            ->toArray();
+
+        return response()->json($data);
     }
 }

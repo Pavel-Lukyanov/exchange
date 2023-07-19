@@ -13,9 +13,6 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('serviced_objects', function (Blueprint $table) {
-            $table->renameColumn('object_id', 'serviced_object_id');
-        });
 
         Schema::table('employees', function (Blueprint $table) {
             $table->renameColumn('object_id', 'serviced_object_id');
@@ -33,10 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('serviced_objects', function (Blueprint $table) {
-            $table->renameColumn('serviced_object_id', 'object_id');
-        });
-
         Schema::table('employees', function (Blueprint $table) {
             $table->renameColumn('serviced_object_id', 'object_id');
         });

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserService;
-use App\Transformers\UserMainInfoTransformer;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -11,12 +11,12 @@ class UserController extends Controller
 {
 
     private UserService $userService;
-    private UserMainInfoTransformer $userMainInfoTransformer;
+    private UserTransformer $userTransformer;
 
-    public function __construct(UserService $userService, UserMainInfoTransformer $userMainInfoTransformer)
+    public function __construct(UserService $userService, UserTransformer $userTransformer)
     {
         $this->userService = $userService;
-        $this->userMainInfoTransformer = $userMainInfoTransformer;
+        $this->userTransformer = $userTransformer;
     }
 
     /**
@@ -28,12 +28,12 @@ class UserController extends Controller
 
         $data = fractal()
             ->collection($users)
-            ->transformWith($this->userMainInfoTransformer)
+            ->transformWith($this->userTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->withResourceName('users')
             ->toArray();
 
-        return response()->json($users);
+        return response()->json($data);
     }
 
     /**
@@ -44,6 +44,13 @@ class UserController extends Controller
     {
         $user = $this->userService->showUser($id);
 
-        return response()->json($user);
+        $data = fractal()
+            ->item($user)
+            ->transformWith($this->userTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->withResourceName('user')
+            ->toArray();
+
+        return response()->json($data);
     }
 }
