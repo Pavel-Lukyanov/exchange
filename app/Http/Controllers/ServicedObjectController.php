@@ -62,9 +62,6 @@ class ServicedObjectController extends Controller
     {
         $validatedData = $request->validated();
 
-        $data['is_archived'] = false;
-        $data['is_completed'] = true;
-
         $object = new ServicedObject;
         $object->fill($validatedData);
         $object->save();
