@@ -26,8 +26,14 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'showUser']);
+
+
+    Route::prefix('/users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{id}', [UserController::class, 'showUser']);
+    });
+
+    Route::get('/search-users', [UserController::class, 'search']);
 
     Route::prefix('/objects')->group(function () {
         Route::get('/{id}', [ServicedObjectController::class, 'showObject']);
@@ -35,8 +41,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::post('/create', [ServicedObjectController::class, 'create']);
     });
+
     Route::get('/search-objects', [SearchServicedObjectController::class, 'search']);
-
-
 });
 

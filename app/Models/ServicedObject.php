@@ -97,7 +97,7 @@ class ServicedObject extends Model
         return $objects;
     }
 
-    public static function createObject(array $data)
+    /*public static function createObject(array $data)
     {
         $object = (new self())->create([
             'name' => $data['name'] ?? null,
@@ -105,5 +105,5 @@ class ServicedObject extends Model
         ]);
 
         return $object;
-    }
+    }*/
 }

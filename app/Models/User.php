@@ -77,4 +77,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Employees::class, 'user_id', 'id'); // Один к одному
     }
+
+    public static function searchUsers($data): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $users = self::query()
+            ->when(isset($data['search']), function($q) use ($data) {
+               $q->where('firstname', 'LIKE', '%' . $data['search'] . '%')
+                   ->orWhere('surname', 'LIKE', '%' . $data['search'] . '%')
+                   ->orWhere('patronymic', 'LIKE', '%' . $data['search'] . '%');
+            })
+            ->paginate(config('defaults.pagination.per_page'));
+
+        return $users;
+    }
 }

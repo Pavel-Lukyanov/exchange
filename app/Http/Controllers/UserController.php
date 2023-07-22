@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Services\UserService;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -31,6 +33,7 @@ class UserController extends Controller
             ->transformWith($this->userTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->withResourceName('users')
+            ->paginateWith(new IlluminatePaginatorAdapter($users))
             ->toArray();
 
         return response()->json($data);
@@ -49,6 +52,21 @@ class UserController extends Controller
             ->transformWith($this->userTransformer)
             ->serializeWith(new JsonApiSerializer())
             ->withResourceName('user')
+            ->toArray();
+
+        return response()->json($data);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $users = $this->userService->searchUsers($request->all());
+
+        $data = fractal()
+            ->collection($users)
+            ->transformWith($this->userTransformer)
+            ->serializeWith(new JsonApiSerializer())
+            ->withResourceName('users')
+            ->paginateWith(new IlluminatePaginatorAdapter($users))
             ->toArray();
 
         return response()->json($data);

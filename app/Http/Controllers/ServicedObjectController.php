@@ -60,15 +60,15 @@ class ServicedObjectController extends Controller
 
     public function create(CreateObjectRequest $request): JsonResponse
     {
-        $object = $this->objectService->createObject($request->all());
+        $validatedData = $request->validated();
 
-        $data = fractal()
-            ->item($object)
-            ->transformWith($this->objectTransformer)
-            ->serializeWith(new JsonApiSerializer())
-            ->withResourceName('serviced_object')
-            ->toArray();
+        $data['is_archived'] = false;
+        $data['is_completed'] = true;
 
-        return response()->json($data);
+        $object = new ServicedObject;
+        $object->fill($validatedData);
+        $object->save();
+
+        return response()->json(['message' => 'Object created successfully'], 201);
     }
 }
