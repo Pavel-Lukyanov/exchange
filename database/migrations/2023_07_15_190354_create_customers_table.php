@@ -15,9 +15,8 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('object_id')->nullable()->constrained('organizations')->nullOnDelete();
+            $table->foreignId('serviced_object_id')->nullable()->constrained('serviced_objects')->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
         });
     }
 

@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('serviced_objects', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('employee_id');
+        Schema::create('phones', function (Blueprint $table) {
+            $table->foreignId('serviced_object_id')->nullable();
+            $table->foreign('serviced_object_id')->references('id')->on('serviced_objects')->onDelete('set null');
+            $table->string('phone');
         });
     }
 
@@ -25,8 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('serviced_objects', function (Blueprint $table) {
-            $table->foreignId('employee_id')->nullable()->constrained('users')->nullOnDelete();
-        });
+        Schema::dropIfExists('phones');
     }
 };

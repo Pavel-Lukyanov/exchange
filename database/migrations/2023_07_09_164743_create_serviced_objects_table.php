@@ -15,8 +15,6 @@ return new class extends Migration
     {
         Schema::create('serviced_objects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('employee_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->string('country');
             $table->string('city');
@@ -26,12 +24,13 @@ return new class extends Migration
             $table->date('contract_date_start');
             $table->date('contract_date_end');
             $table->string('type_installation');
-            $table->string('name_organization_do_project');
-            $table->date('project_release_date');
+            $table->string('name_organization_do_project')->nullable();
+            $table->date('project_release_date')->nullable();
             $table->string('organization_name_mounting')->nullable();
             $table->date('date_delivery_object')->nullable();
             $table->json('services_schedule');
             $table->longText('description_object');
+            $table->string('installation_composition');
             $table->json('scheme')->nullable();
             $table->json('loop_lists')->nullable();
             $table->json('photos')->nullable();

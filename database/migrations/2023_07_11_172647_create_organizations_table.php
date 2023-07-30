@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('street');
             $table->string('house');
             $table->date('deleted_at')->nullable()->default(null);
+            $table->json('requisites')->nullable();
             $table->timestamps();
         });
     }

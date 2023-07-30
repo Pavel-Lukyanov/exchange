@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('id_organization');
             $table->string('firstname');
             $table->string('surname');
             $table->string('patronymic');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('phone')->unique();
             $table->string('city')->nullable();
             $table->string('street')->nullable();
             $table->string('house')->nullable();
@@ -28,8 +28,10 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->date('date_medical_examination')->nullable();
             $table->string('position');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
             $table->dateTime('deleted_at')->nullable();
-            $table->string('phone')->unique();
             $table->rememberToken();
             $table->timestamps();
         });
