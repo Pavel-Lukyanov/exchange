@@ -42,8 +42,7 @@ class User extends Authenticatable
         'firstname',
         'surname',
         'patronymic',
-        'email',
-        'password',
+        'phone',
         'city',
         'street',
         'house',
@@ -51,8 +50,9 @@ class User extends Authenticatable
         'birthday',
         'date_medical_examination',
         'position',
+        'email',
         'deleted_at',
-        'phone',
+        'password',
     ];
 
     /**
