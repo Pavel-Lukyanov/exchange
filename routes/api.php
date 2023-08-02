@@ -39,7 +39,9 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', [ServicedObjectController::class, 'showObject']);
         Route::get('/', [ServicedObjectController::class, 'index']);
 
-        Route::post('/create', [ServicedObjectController::class, 'create']);
+        Route::group(['middleware' => ['role:admin_organization']], function () {
+            Route::post('/create', [ServicedObjectController::class, 'create']);
+        });
     });
 
     Route::get('/search-objects', [SearchServicedObjectController::class, 'search']);
