@@ -26,8 +26,6 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
-
-
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}', [UserController::class, 'showUser']);
@@ -41,9 +39,15 @@ Route::middleware('auth:api')->group(function () {
 
         Route::group(['middleware' => ['role:admin_organization']], function () {
             Route::post('/create', [ServicedObjectController::class, 'create']);
+            Route::patch('/delete/{id}', [ServicedObjectController::class, 'delete']);
         });
     });
 
     Route::get('/search-objects', [SearchServicedObjectController::class, 'search']);
+
+    Route::middleware('role:super_admin')->group(function () {
+    });
+
+
 });
 

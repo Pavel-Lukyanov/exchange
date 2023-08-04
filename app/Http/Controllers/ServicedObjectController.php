@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateObjectRequest;
+use App\Models\Customer;
 use App\Models\ServicedObject;
 use App\Services\ServicedObjectService;
 use App\Transformers\ServicedObjectTransformer;
+use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -67,5 +70,23 @@ class ServicedObjectController extends Controller
         $object->save();
 
         return response()->json(['message' => 'Object created successfully'], 201);
+    }
+
+    public function delete(Request $request, int $objectId)
+    {
+        $object = ServicedObject::findOrFail($objectId);
+
+        $customers = $object->customers;
+
+
+        foreach ($customers as $customer) {
+            $customersSearch = Customer::query()->where('user_id', $customer->user_id)->get()->toArray();
+
+            if(count($customersSearch) === 1) {
+               User::findOrFail($customer->user_id)->update(['deleted_at' => Carbon::now()]);
+            }
+        }
+        $object->update(['is_archived' => 1]);
+        return response()->json(['message' => 'Object deleted successfully'], 201);
     }
 }

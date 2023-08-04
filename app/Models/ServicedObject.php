@@ -59,14 +59,10 @@ class ServicedObject extends Model
         'is_completed'
     ];
 
-    public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Employees::class, 'serviced_object_id'); // Многие к одному
-    }
 
     public function customers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Employees::class, 'serviced_object_id'); // Многие к одному
+        return $this->hasMany(Customer::class, 'serviced_object_id'); // Многие к одному
     }
 
     public static function getObjects($data, $userId): \Illuminate\Contracts\Pagination\LengthAwarePaginator

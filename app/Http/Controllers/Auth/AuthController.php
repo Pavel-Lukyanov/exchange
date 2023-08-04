@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
         $oClient = OClient::where('password_client', 1)->first();
         $http = new Client;
-        $response = $http->request('POST', /*env('APP_URL') .*/ 'http://127.0.0.1:8001/oauth/token', [
+        $response = $http->request('POST', env('APP_URL') . '/oauth/token', [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => $oClient->id,
