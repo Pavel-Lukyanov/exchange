@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\SearchServicedObjectController;
 use App\Http\Controllers\ServicedObjectController;
 use App\Http\Controllers\UserController;
@@ -48,6 +49,14 @@ Route::middleware('auth:api')->group(function () {
     Route::middleware('role:super_admin')->group(function () {
     });
 
+    Route::group(['middleware' => ['role:admin_organization']], function () {
+        Route::prefix('/organizations')->group(function () {
+            Route::get('/{id}', [OrganizationController::class, 'showOrganization']);
+            Route::get('/', [OrganizationController::class, 'index']);
+            Route::post('/create', [OrganizationController::class, 'create']);
+            Route::patch('/delete/{id}', [OrganizationController::class, 'delete']);
+        });
+    });
 
 });
 

@@ -27,4 +27,9 @@ class Employees extends Model
     {
         return $this->hasOne(User::class); // Один к одному
     }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
 }

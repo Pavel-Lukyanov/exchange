@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateObjectRequest;
+use App\Models\Contract;
 use App\Models\Customer;
+use App\Models\Organization;
 use App\Models\ServicedObject;
 use App\Services\ServicedObjectService;
 use App\Transformers\ServicedObjectTransformer;
@@ -11,6 +13,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Serializer\JsonApiSerializer;
 
@@ -63,11 +66,19 @@ class ServicedObjectController extends Controller
 
     public function create(CreateObjectRequest $request): JsonResponse
     {
+        $userId = auth()->user()->getAuthIdentifier();
+        $organization = Organization::query()->where('user_id', $userId);
         $validatedData = $request->validated();
 
-        $object = new ServicedObject;
-        $object->fill($validatedData);
-        $object->save();
+        DB::tansaction(function () use ($validatedData, $organization) {
+            $object = new ServicedObject;
+            $object->fill($validatedData);
+            $object->save();
+
+            $contract = new Contract();
+            $contract->fill(['serviced_object_id'=> $object->id, 'organization_id' => $organization->id]);
+            $contract->save();
+        });
 
         return response()->json(['message' => 'Object created successfully'], 201);
     }
@@ -77,7 +88,6 @@ class ServicedObjectController extends Controller
         $object = ServicedObject::findOrFail($objectId);
 
         $customers = $object->customers;
-
 
         foreach ($customers as $customer) {
             $customersSearch = Customer::query()->where('user_id', $customer->user_id)->get()->toArray();

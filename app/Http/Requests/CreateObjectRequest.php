@@ -24,7 +24,6 @@ class CreateObjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|integer',
             'name' => 'required|string|min:2|max:255',
             'country' => 'required|string|min:2|max:255',
             'city' => 'required|string|min:2|max:255',
