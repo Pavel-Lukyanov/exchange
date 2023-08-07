@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function employee(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Employees::class, 'user_id', 'id'); // Один к одному
+        return $this->belongsTo(Employee::class, 'user_id', 'id'); // Один к одному
     }
 
     public static function searchUsers($data): \Illuminate\Contracts\Pagination\LengthAwarePaginator

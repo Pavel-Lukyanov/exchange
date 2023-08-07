@@ -93,13 +93,8 @@ class ServicedObject extends Model
         return $objects;
     }
 
-    /*public static function createObject(array $data)
+    public function contract()
     {
-        $object = (new self())->create([
-            'name' => $data['name'] ?? null,
-            'user_id' => $data['user_id']
-        ]);
-
-        return $object;
-    }*/
+        return $this->belongsTo(Contract::class);
+    }
 }

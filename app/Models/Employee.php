@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $serviced_object_id
  * @property int $user_id
  */
-class Employees extends Model
+class Employee extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
 
     protected $fillable = [
         'serviced_object_id',

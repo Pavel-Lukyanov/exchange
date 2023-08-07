@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrganizationRequest;
-use App\Models\Employees;
+use App\Models\Contract;
+use App\Models\Employee;
 use App\Models\Organization;
+use App\Models\ServicedObject;
 use App\Models\User;
 use App\Services\OrganizationService;
 use App\Transformers\OrganizationTransformer;
@@ -54,7 +56,7 @@ class OrganizationController extends Controller
         $organization->fill($validatedData);
         $organization->save();
 
-        return response()->json(['message' => 'Organization created successfully'], 201);
+        return response()->json(['message' => 'Организация успешно создана'], 201);
     }
 
     public function showOrganization(OrganizationService $organizationService, $id): JsonResponse
@@ -79,31 +81,57 @@ class OrganizationController extends Controller
 
             $organization = Organization::findOrFail($organizationId);
 
+
+            if ($organization->deleted_at != null) {
+                return response()->json(['message' => 'Организация не найдена'], 404);
+            }
+
             if ($organization->user_id != $userId) {
-                return response()->json(['message' => 'You are not the owner of this organization'], 403);
+                return response()->json(['message' => 'Вы не являетесь владельцем этой организации'], 403);
             }
 
             DB::transaction(function () use ($organization) {
                 $employees = $organization->employees;
 
+                //Удаляем employees у которых 1 объект
                 foreach ($employees as $employee) {
-                    $employeesSearch = Employees::where('user_id', $employee->user_id)
-                        ->where('organization_id', '!=', $employee->organization_id)
-                        ->count();
+                    $organizationsOfEmployee = Employee::where('user_id', $employee->user_id)
+                        ->where('deleted_at', null)
+                        ->pluck('organization_id')
+                        ->toArray();
 
-                    if($employeesSearch === 0) {
-                        Employees::where('user_id', $employee->user_id)->update(['deleted_at' => Carbon::now()]);
+                    if (count(array_unique($organizationsOfEmployee)) === 1) {
+                        Employee::where('user_id', $employee->user_id)
+                            ->update(['deleted_at' => Carbon::now()]);
+
+                        User::where('id', $employee->user_id)
+                            ->update(['deleted_at' => Carbon::now()]);
+                    }
+                }
+
+                //Удаляем контракты
+                Contract::where('organization_id', $organization->id)
+                    ->update(['deleted_at' => Carbon::now()]);
+
+                //Удаляем организации
+                $contracts = Contract::where('organization_id', $organization->id)->get();
+
+                foreach ($contracts as $contract) {
+                    $servicedObjects = ServicedObject::where('contract_id', $contract->id)->get();
+
+                    foreach ($servicedObjects as $servicedObject) {
+                        $servicedObject->update(['deleted_at' => Carbon::now()]);
                     }
                 }
 
                 $organization->update(['deleted_at' => Carbon::now()]);
             });
 
-            return response()->json(['message' => 'Organization deleted successfully'], 201);
+            return response()->json(['message' => 'Организация успешно удалена'], 201);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Organization not found'], 404);
+            return response()->json(['message' => 'Организация не найдена'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'An error occurred while deleting the organization'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }
